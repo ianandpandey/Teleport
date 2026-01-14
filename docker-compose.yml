@@ -1,0 +1,19 @@
+# docker compose up --build
+# that's it, no database or anything else needed
+
+version: '3.8'
+
+services:
+  smartload-api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONUNBUFFERED=1  # so we see logs immediately
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/healthz')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
